@@ -31,7 +31,7 @@ from .resources import *
 from .gadm_loader_dialog import GADMloaderDialog
 import os.path
 
-from .parser import parse_gadm_countries
+from .parser import parse_gadm_countries, get_url
 
 
 class GADMloader:
@@ -210,20 +210,8 @@ class GADMloader:
             self.add_layers = self.dlg.cbAddLayers.isChecked() 
             
 
-            # construct url
-
-            def get_url(self):
-                if self.country_code == "WORLD":
-                    if self.format_gpkg:
-                        url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip"
-                    else:
-                        url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_shp.zip"
-                else:
-                    url = "https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_" + \
-                        self.country_code + "_" + \
-                        ("gpkg.zip" if self.format_gpkg else "shp.zip")
-                return url
             
+            # TODO Remove prints after DEV
             print("--- restarted ---")
             print("format_gpkg", str(self.format_gpkg))
             print("country_name", str(self.country_name))
@@ -231,4 +219,10 @@ class GADMloader:
             print("file", str(self.file_name))
             print("add_to_canvas", str(self.add_layers))
             print("url", get_url(self))
+
+            # TODO download data
+
+            # TODO extract zip-files
+
+            # TODO add layer(s) to canvas
 

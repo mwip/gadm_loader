@@ -47,3 +47,17 @@ def parse_gadm_countries():
     out['Entire World'] = "WORLD"
     
     return out
+
+
+# construct url
+def get_url(self):
+    if self.country_code == "WORLD":
+        if self.format_gpkg:
+            url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip"
+        else:
+            url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_shp.zip"
+    else:
+        url = "https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_" + \
+            self.country_code + "_" + \
+            ("gpkg.zip" if self.format_gpkg else "shp.zip")
+    return url
