@@ -30,8 +30,6 @@ from .resources import *
 # Import the code for the dialog
 from .gadm_loader_dialog import GADMloaderDialog
 import os.path
-import urllib.request, urllib.error, urllib.parse
-import re
 
 
 
@@ -71,35 +69,6 @@ class GADMloader:
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
 
-        # the URL from which to scrape the available countries / regions
-        self.url = 'https://gadm.org/download_country_v3.html'
-
-        def parse_gadm_countries(self):
-            try:
-                response = urllib.request.urlopen(self.url, timeout = 30)
-                content = response.read()
-            except urllib.error.HTTPError as e:
-                print(e.msg, ":", url)
-            except urllib.error.URLError as e:
-                print(e.reason, ":", url)
-            
-            # from the http content, we want to find all countries listed inside <option value> tags
-            values = re.findall(r"<option value=\"\w*\">\w+</option>", str(content))
-    
-            # extract country codes and names from the values
-            codes = [re.search(r"[A-Z]{3}", str(x)).group() for x in list(values)]
-            names = [re.search(r"(?<=>)[A-Za-z ]+(?=<)", str(x)).group() for x in list(values)]
-    
-            # zip country codes and values into a dictionary
-            out = dict(zip(codes, names))
-            # add the world
-            out['WRL'] = "Entire World"
-    
-            return out
-
-        self.countries_dict = parse_gadm_countries(self)
-        print(self.countries_dict)
-        # cbCountry.addItems(countries_dict.values())
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
