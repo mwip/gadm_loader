@@ -31,7 +31,7 @@ from .resources import *
 from .gadm_loader_dialog import GADMloaderDialog
 import os.path
 
-
+from .parser import parse_gadm_countries
 
 
 class GADMloader:
@@ -187,20 +187,48 @@ class GADMloader:
 
     def run(self):
         """Run method that performs all the real work"""
-
+        self.country_dict = parse_gadm_countries()
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
             self.first_start = False
-            self.dlg = GADMloaderDialog()
+            self.dlg = GADMloaderDialog(self.country_dict)
 
         # show the dialog
         self.dlg.show()
+
+        
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+            # gather input
+            self.format_gpkg = self.dlg.rbGeopackage.isChecked() 
+            self.country_name = self.dlg.cbCountry.currentText() 
+            self.country_code = self.country_dict[self.country_name] 
+            self.file_name = self.dlg.qfFile.filePath()
+            self.add_layers = self.dlg.cbAddLayers.isChecked() 
+            
+
+            # construct url
+
+            def get_url(self):
+                if self.country_code == "WORLD":
+                    if self.format_gpkg:
+                        url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip"
+                    else:
+                        url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_shp.zip"
+                else:
+                    url = "https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_" + \
+                        self.country_code + "_" + \
+                        ("gpkg.zip" if self.format_gpkg else "shp.zip")
+                return url
+            
+            print("--- restarted ---")
+            print("format_gpkg", str(self.format_gpkg))
+            print("country_name", str(self.country_name))
+            print("country_code", str(self.country_code))
+            print("file", str(self.file_name))
+            print("add_to_canvas", str(self.add_layers))
+            print("url", get_url(self))
 

@@ -27,7 +27,6 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
-from .parser import parse_gadm_countries
 
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
@@ -36,7 +35,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 
 class GADMloaderDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self, country_dict, parent=None):
         """Constructor."""
         super(GADMloaderDialog, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
@@ -47,4 +46,4 @@ class GADMloaderDialog(QtWidgets.QDialog, FORM_CLASS):
         self.setupUi(self)
 
         # populate combobox with values
-        self.cbCountry.addItems(parse_gadm_countries().values())
+        self.cbCountry.addItems(country_dict.keys())

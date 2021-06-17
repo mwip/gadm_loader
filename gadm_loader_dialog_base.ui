@@ -112,7 +112,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFileWidget" name="mQgsFileWidget">
+      <widget class="QgsFileWidget" name="qfFile">
        <property name="cursor">
         <cursorShape>ArrowCursor</cursorShape>
        </property>

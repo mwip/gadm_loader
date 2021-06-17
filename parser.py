@@ -42,8 +42,8 @@ def parse_gadm_countries():
     names = [re.search(r"(?<=>)[A-Za-z ]+(?=<)", str(x)).group() for x in list(values)]
     
     # zip country codes and values into a dictionary
-    out = dict(zip(codes, names))
+    out = dict(zip(names, codes))
     # add the world
-    out['WRL'] = "Entire World"
+    out['Entire World'] = "WORLD"
     
     return out
