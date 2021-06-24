@@ -57,7 +57,8 @@ def get_url(self):
         else:
             url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_shp.zip"
     else:
-        url = "https://biogeo.ucdavis.edu/data/gadm3.6/gpkg/gadm36_" + \
-            self.country_code + "_" + \
+        url = "https://biogeo.ucdavis.edu/data/gadm3.6/" + \
+            ("gpkg" if self.format_gpkg else "shp") + \
+            "/gadm36_" + self.country_code + "_" + \
             ("gpkg.zip" if self.format_gpkg else "shp.zip")
     return url

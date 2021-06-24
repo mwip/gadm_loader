@@ -24,14 +24,17 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
+from qgis.core import QgsProject, QgsVectorLayer
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
 from .gadm_loader_dialog import GADMloaderDialog
 import os.path
+import re
 
 from .parser import parse_gadm_countries, get_url
+from .downloadThread import DownloadThread
 
 
 class GADMloader:
@@ -68,6 +71,25 @@ class GADMloader:
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
+
+        self.country_dict = parse_gadm_countries()
+        self.dlg = GADMloaderDialog(self.country_dict)
+
+    def read_inputs(self):
+        self.format_gpkg = self.dlg.rbGeopackage.isChecked()
+        self.country_name = self.dlg.cbCountry.currentText()
+        self.country_code = self.country_dict[self.country_name]
+        self.folder_name = self.dlg.qfFolder.filePath()
+
+    def on_download_clicked(self):
+        self.read_inputs()
+        self.dlt = DownloadThread(get_url(self), self.folder_name)
+        self.dlt.download_signal.connect(self.set_download_progress)
+        self.dlt.start()
+
+
+    def set_download_progress(self, value):
+        self.dlg.pbDownload.setValue(value)
 
 
     # noinspection PyMethodMayBeStatic
@@ -187,42 +209,27 @@ class GADMloader:
 
     def run(self):
         """Run method that performs all the real work"""
-        self.country_dict = parse_gadm_countries()
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg = GADMloaderDialog(self.country_dict)
 
         # show the dialog
         self.dlg.show()
+        self.dlg.pbDownloadButton.clicked.connect(self.on_download_clicked)
 
         
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            # gather input
-            self.format_gpkg = self.dlg.rbGeopackage.isChecked() 
-            self.country_name = self.dlg.cbCountry.currentText() 
-            self.country_code = self.country_dict[self.country_name] 
-            self.file_name = self.dlg.qfFile.filePath()
-            self.add_layers = self.dlg.cbAddLayers.isChecked() 
-            
+            self.read_inputs()
 
-            
-            # TODO Remove prints after DEV
-            print("--- restarted ---")
-            print("format_gpkg", str(self.format_gpkg))
-            print("country_name", str(self.country_name))
-            print("country_code", str(self.country_code))
-            print("file", str(self.file_name))
-            print("add_to_canvas", str(self.add_layers))
-            print("url", get_url(self))
+            # add layer(s) to canvas
+            if self.dlg.cbAddLayers.isChecked():
+                for f in os.listdir(self.folder_name):
+                    regx = re.compile("gadm36_{c}{f}".format(
+                        c = self.country_code,
+                        f = ".gpkg$" if self.format_gpkg else "_[0-9]{1}.shp$"
+                    ))
+                    if regx.match(f):
+                        vlayer = QgsVectorLayer(f, os.path.splitext(os.path.basename(f))[0], "ogr")
+                        QgsProject.instance().addMapLayer(vlayer)
 
-            # TODO download data
-
-            # TODO extract zip-files
-
-            # TODO add layer(s) to canvas
 
