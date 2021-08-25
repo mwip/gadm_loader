@@ -236,5 +236,21 @@ class GADMloader:
                         vlayer = QgsVectorLayer(full_path,
                                                 os.path.splitext(os.path.basename(f))[0],
                                                 "ogr")
-                        QgsProject.instance().addMapLayer(vlayer)
+
+                        # add layer if it is a shp
+                        if not self.format_gpkg:
+                            QgsProject.instance().addMapLayer(vlayer)
+
+                        # add all sub-layers if it is a gpkg
+                        # https://stackoverflow.com/a/57404611/3250126
+                        else:
+                            sublayers = vlayer.dataProvider().subLayers()
+
+                            for sl in sublayers:
+                                name = sl.split('!!::!!')[1]
+                                uri = "%s|layername=%s" % (full_path, name,)
+                                # Create layer
+                                sub_vlayer = QgsVectorLayer(uri, name, 'ogr')
+                                # Add layer to map
+                                QgsProject.instance().addMapLayer(sub_vlayer)
 
