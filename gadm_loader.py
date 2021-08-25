@@ -33,8 +33,8 @@ from .gadm_loader_dialog import GADMloaderDialog
 import os.path
 import re
 
-from .parser import parse_gadm_countries, get_url
-from .downloadThread import DownloadThread
+from .utils.parser import parse_gadm_countries, get_url
+from .utils.downloadThread import DownloadThread
 
 
 class GADMloader:

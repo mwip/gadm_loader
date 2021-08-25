@@ -26,6 +26,7 @@ import requests
 from zipfile import ZipFile
 import os
 
+
 class DownloadThread(QThread):
     download_signal = pyqtSignal(int)
     
@@ -56,9 +57,8 @@ class DownloadThread(QThread):
                 with ZipFile(archive) as z:
                     z.extractall(self.folder_name)
                 os.remove(archive)
-
             except:
-                print("Failed to extract zip archive:", archive)
+                raise Exception("Failed to extract zip archive:", archive)
             
             self.exit(0)
 

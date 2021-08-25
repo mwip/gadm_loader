@@ -95,9 +95,6 @@
      </item>
      <item>
       <widget class="QComboBox" name="cbCountry">
-       <property name="placeholderText">
-        <string/>
-       </property>
       </widget>
      </item>
     </layout>
