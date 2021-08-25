@@ -223,13 +223,18 @@ class GADMloader:
 
             # add layer(s) to canvas
             if self.dlg.cbAddLayers.isChecked():
+                # set up regex to check files in self.folder_name.
+                # it could be that there are other files, e.g. LICENSE.txt or prev. downloaded files
+                regx = re.compile("gadm36_{c}{f}".format(
+                    c = self.country_code,
+                    f = ".gpkg$" if self.format_gpkg else "_[0-9]{1}.shp$"
+                ))
+                # loop over all files in self.folder_name and check whether they match the settings
                 for f in os.listdir(self.folder_name):
-                    regx = re.compile("gadm36_{c}{f}".format(
-                        c = self.country_code,
-                        f = ".gpkg$" if self.format_gpkg else "_[0-9]{1}.shp$"
-                    ))
                     if regx.match(f):
-                        vlayer = QgsVectorLayer(f, os.path.splitext(os.path.basename(f))[0], "ogr")
+                        full_path = f'{self.folder_name}/{f}'
+                        vlayer = QgsVectorLayer(full_path,
+                                                os.path.splitext(os.path.basename(f))[0],
+                                                "ogr")
                         QgsProject.instance().addMapLayer(vlayer)
-
 

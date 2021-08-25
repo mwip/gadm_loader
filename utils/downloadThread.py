@@ -29,7 +29,7 @@ import os
 
 class DownloadThread(QThread):
     download_signal = pyqtSignal(int)
-    
+
     def __init__(self, url, folder_name, chunk_size = 128):
         super().__init__()
         self.url = url
@@ -52,16 +52,16 @@ class DownloadThread(QThread):
                     offset = offset + len(chunk)
                     progress = offset / int(file_size) * 100
                     self.download_signal.emit(int(progress))
-            
+
             try:
                 with ZipFile(archive) as z:
                     z.extractall(self.folder_name)
                 os.remove(archive)
             except:
                 raise Exception("Failed to extract zip archive:", archive)
-            
+
             self.exit(0)
 
         except Exception as e:
             print(e)
-    
+
