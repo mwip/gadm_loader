@@ -30,8 +30,10 @@ import os
 class DownloadThread(QThread):
     download_signal = pyqtSignal(int)
 
-    def __init__(self, url, folder_name, chunk_size = 128):
+    def __init__(self):
         super().__init__()
+
+    def set_vars(self, url, folder_name, chunk_size = 128):
         self.url = url
         self.folder_name = folder_name
         self.chunk_size = chunk_size
@@ -42,8 +44,6 @@ class DownloadThread(QThread):
             file_size = req.headers['Content-Length']
 
             archive = self.folder_name + "/" + os.path.basename(self.url)
-
-            print("Downloading", self.url)
 
             offset = 0
             with open(archive, 'wb') as fileobj:
@@ -60,8 +60,9 @@ class DownloadThread(QThread):
             except:
                 raise Exception("Failed to extract zip archive:", archive)
 
-            self.exit(0)
-
         except Exception as e:
             print(e)
+
+        finally:
+            self.quit()
 

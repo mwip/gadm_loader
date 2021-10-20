@@ -74,6 +74,7 @@ class GADMloader:
 
         self.country_dict = parse_gadm_countries()
         self.dlg = GADMloaderDialog(self.country_dict)
+        self.downloadthread = DownloadThread()
 
     def read_inputs(self):
         self.format_gpkg = self.dlg.rbGeopackage.isChecked()
@@ -83,9 +84,9 @@ class GADMloader:
 
     def on_download_clicked(self):
         self.read_inputs()
-        self.dlt = DownloadThread(get_url(self), self.folder_name)
-        self.dlt.download_signal.connect(self.set_download_progress)
-        self.dlt.start()
+        self.downloadthread.set_vars(get_url(self), self.folder_name)
+        self.downloadthread.download_signal.connect(self.set_download_progress)
+        self.downloadthread.start()
 
 
     def set_download_progress(self, value):
@@ -214,7 +215,6 @@ class GADMloader:
         self.dlg.show()
         self.dlg.pbDownloadButton.clicked.connect(self.on_download_clicked)
 
-        
         # Run the dialog event loop
         result = self.dlg.exec_()
         # See if OK was pressed
