@@ -1,6 +1,11 @@
 # GADM Loader
+> Conveniently download GADM Data from within QGIS.
 
 GADM loader is a QGIS plugin that allows you to download GADM data and add them directly to your QGIS project.
+
+## Demo
+
+![Demo of GADM Loader](demo.gif)
 
 ## Acknowledgements
 
