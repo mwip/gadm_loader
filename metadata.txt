@@ -23,7 +23,7 @@ changelog=Here you will find the changelog
   0.1 - Initial release
 
 tags=polygon,search,web,admin,download,GADM
-category=Plugins
+category=Vector
 
 icon=icon.png
 experimental=False
