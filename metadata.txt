@@ -5,39 +5,29 @@
 [general]
 name=GADM Loader
 qgisMinimumVersion=3.0
-description=Download GADM data.
+description=Conviently download GADM data directly from within QGIS.
 version=0.1
 author=Matthias Weigand
 email=matthias.weigand@protonmail.com
-
-about=This plugin allows you to download GADM data and add them as layers to your project.
+about=This plugin allows you to download GADM data
+  and add them as layers to your project.
+  The data are freely available for academic use and
+  other non-commercial use. Redistribution, or
+  commercial use is not allowed without prior permission.
 
 tracker=https://github.com/mwip/gadm_loader/issues
 repository=https://github.com/mwip/gadm_loader/issues
-license=https://github.com/mwip/gadm_loader/blob/main/LICENSE
-# End of mandatory metadata
+homepage=https://github.com/mwip/gadm_loader
 
-# Recommended items:
+changelog=Here you will find the changelog
+  0.1 - Initial release
 
-hasProcessingProvider=no
-# Uncomment the following line and add your changelog:
-# changelog=
-
-# Tags are comma separated with spaces allowed
-tags=polygon, search, web, admin, download, GADM
-
-# homepage=http://homepage
+tags=polygon,search,web,admin,download,GADM
 category=Plugins
+
 icon=icon.png
-# experimental flag
 experimental=False
-
-# deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
-
-# Category of the plugin: Raster, Vector, Database or Web
-category=Vector
-
-# If the plugin can run on QGIS Server.
 server=False
+hasProcessingProvider=no
 
