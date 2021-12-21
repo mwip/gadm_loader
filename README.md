@@ -7,6 +7,15 @@ GADM loader is a QGIS plugin that allows you to download GADM data and add them 
 
 ![Demo of GADM Loader](demo.gif)
 
+## Installation
+
+For now, as the plugin is not yet available via QGIS directly, you can install the plugin from a zip
+file:
+
+1. Click the `Code`-Button at the top of the page and click `Download ZIP`.
+2. In QGIS, click `Plugins`, `Manage and Install Plugins...`, `Install from ZIP`, select the downloaded ZIP from your file system.
+3. Click `Install Plugin`. You will have to accept the warning.
+
 ## Acknowledgements
 
 This plugin acquires data from http://gdam.org. Without their dedicated work, this plugin would not
