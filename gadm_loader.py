@@ -28,6 +28,7 @@ from qgis.core import QgsProject, QgsVectorLayer
 
 # Initialize Qt resources from file resources.py
 from .resources import *
+
 # Import the code for the dialog
 from .gadm_loader_dialog import GADMloaderDialog
 import os.path
@@ -53,11 +54,8 @@ class GADMloader:
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'GADMloader_{}.qm'.format(locale))
+        locale = QSettings().value("locale/userLocale")[0:2]
+        locale_path = os.path.join(self.plugin_dir, "i18n", "GADMloader_{}.qm".format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -66,7 +64,7 @@ class GADMloader:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&GADM Loader')
+        self.menu = self.tr("&GADM Loader")
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -88,10 +86,8 @@ class GADMloader:
         self.downloadthread.download_signal.connect(self.set_download_progress)
         self.downloadthread.start()
 
-
     def set_download_progress(self, value):
         self.dlg.pbDownload.setValue(value)
-
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -106,8 +102,7 @@ class GADMloader:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('GADMloader', message)
-
+        return QCoreApplication.translate("GADMloader", message)
 
     def add_action(
         self,
@@ -119,7 +114,8 @@ class GADMloader:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+    ):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -175,38 +171,31 @@ class GADMloader:
             self.iface.addToolBarIcon(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            self.iface.addPluginToMenu(self.menu, action)
 
         self.actions.append(action)
 
         return action
 
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/gadm_loader/icon.png'
+        icon_path = ":/plugins/gadm_loader/icon.png"
         self.add_action(
             icon_path,
-            text=self.tr(u'Download GADM data'),
+            text=self.tr("Download GADM data"),
             callback=self.run,
-            parent=self.iface.mainWindow())
+            parent=self.iface.mainWindow(),
+        )
 
         # will be set False in run()
         self.first_start = True
 
-
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&GADM Loader'),
-                action)
+            self.iface.removePluginMenu(self.tr("&GADM Loader"), action)
             self.iface.removeToolBarIcon(action)
-
 
     def run(self):
         """Run method that performs all the real work"""
@@ -225,17 +214,18 @@ class GADMloader:
             if self.dlg.cbAddLayers.isChecked():
                 # set up regex to check files in self.folder_name.
                 # it could be that there are other files, e.g. LICENSE.txt or prev. downloaded files
-                regx = re.compile("gadm36_{c}{f}".format(
-                    c = self.country_code,
-                    f = ".gpkg$" if self.format_gpkg else "_[0-9]{1}.shp$"
-                ))
+                regx = re.compile(
+                    "gadm36_{c}{f}".format(
+                        c=self.country_code, f=".gpkg$" if self.format_gpkg else "_[0-9]{1}.shp$"
+                    )
+                )
                 # loop over all files in self.folder_name and check whether they match the settings
                 for f in os.listdir(self.folder_name):
                     if regx.match(f):
-                        full_path = f'{self.folder_name}/{f}'
-                        vlayer = QgsVectorLayer(full_path,
-                                                os.path.splitext(os.path.basename(f))[0],
-                                                "ogr")
+                        full_path = f"{self.folder_name}/{f}"
+                        vlayer = QgsVectorLayer(
+                            full_path, os.path.splitext(os.path.basename(f))[0], "ogr"
+                        )
 
                         # add layer if it is a shp
                         if not self.format_gpkg:
@@ -247,10 +237,12 @@ class GADMloader:
                             sublayers = vlayer.dataProvider().subLayers()
 
                             for sl in sublayers:
-                                name = sl.split('!!::!!')[1]
-                                uri = "%s|layername=%s" % (full_path, name,)
+                                name = sl.split("!!::!!")[1]
+                                uri = "%s|layername=%s" % (
+                                    full_path,
+                                    name,
+                                )
                                 # Create layer
-                                sub_vlayer = QgsVectorLayer(uri, name, 'ogr')
+                                sub_vlayer = QgsVectorLayer(uri, name, "ogr")
                                 # Add layer to map
                                 QgsProject.instance().addMapLayer(sub_vlayer)
-
