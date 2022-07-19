@@ -21,12 +21,14 @@
  ***************************************************************************/
 """
 
-import urllib.request, urllib.error, urllib.parse
 import re
+import urllib.error
+import urllib.parse
+import urllib.request
 
 
 def parse_gadm_countries():
-    url = "https://gadm.org/download_country_v3.html"
+    url = "https://gadm.org/download_country.html"
     try:
         response = urllib.request.urlopen(url, timeout=30)
         content = response.read()
@@ -51,19 +53,12 @@ def parse_gadm_countries():
 
 
 # construct url
-def get_url(gadmloader):
-    if gadmloader.country_code == "WORLD":
-        if gadmloader.format_gpkg:
-            url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip"
-        else:
-            url = "https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_shp.zip"
+def get_url(country_code: str, gadm_version_no_sep: int) -> str:
+    if country_code == "WORLD":
+        url = f"https://geodata.ucdavis.edu/gadm/gadm4.1/gadm_{gadm_version_no_sep}0-gpkg.zip"
     else:
         url = (
-            "https://biogeo.ucdavis.edu/data/gadm3.6/"
-            + ("gpkg" if gadmloader.format_gpkg else "shp")
-            + "/gadm36_"
-            + gadmloader.country_code
-            + "_"
-            + ("gpkg.zip" if gadmloader.format_gpkg else "shp.zip")
+            f"https://geodata.ucdavis.edu/gadm/gadm4.1/gpkg/gadm{gadm_version_no_sep}_"
+            f"{country_code}.gpkg"
         )
     return url

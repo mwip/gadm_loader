@@ -6,7 +6,7 @@
 name=GADM Loader
 qgisMinimumVersion=3.0
 description=Conviently download GADM data directly from within QGIS.
-version=0.2
+version=0.3
 author=Matthias Weigand
 email=matthias.weigand@protonmail.com
 about=This plugin allows you to download GADM data
@@ -20,6 +20,7 @@ repository=https://github.com/mwip/gadm_loader/issues
 homepage=https://github.com/mwip/gadm_loader
 
 changelog=Here you will find the changelog
+  0.3 - Update to GADM 4.1; No shapefiles anymore, only GPKG; refactoring code
   0.2 - Fix: include countries with spaces in names or codes
   0.1 - Initial release
 

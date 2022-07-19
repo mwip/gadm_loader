@@ -21,10 +21,11 @@
  ***************************************************************************/
 """
 
-from PyQt5.QtCore import QThread, pyqtSignal
-import requests
-from zipfile import ZipFile
 import os
+from zipfile import ZipFile
+
+import requests
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class DownloadThread(QThread):
@@ -33,36 +34,36 @@ class DownloadThread(QThread):
     def __init__(self):
         super().__init__()
 
-    def set_vars(self, url, folder_name, chunk_size = 128):
+    def set_vars(self, url, folder_name, chunk_size=128):
         self.url = url
         self.folder_name = folder_name
         self.chunk_size = chunk_size
 
     def run(self):
         try:
-            req = requests.get(self.url, stream = True)
-            file_size = req.headers['Content-Length']
+            req = requests.get(self.url, stream=True)
+            file_size = req.headers["Content-Length"]
 
             archive = self.folder_name + "/" + os.path.basename(self.url)
 
             offset = 0
-            with open(archive, 'wb') as fileobj:
-                for chunk in req.iter_content(chunk_size = self.chunk_size):
+            with open(archive, "wb") as fileobj:
+                for chunk in req.iter_content(chunk_size=self.chunk_size):
                     fileobj.write(chunk)
                     offset = offset + len(chunk)
                     progress = offset / int(file_size) * 100
                     self.download_signal.emit(int(progress))
 
-            try:
-                with ZipFile(archive) as z:
-                    z.extractall(self.folder_name)
-                os.remove(archive)
-            except:
-                raise Exception("Failed to extract zip archive:", archive)
+            if archive.endswith(".zip"):
+                try:
+                    with ZipFile(archive) as z:
+                        z.extractall(self.folder_name)
+                    os.remove(archive)
+                except:
+                    raise Exception("Failed to extract zip archive:", archive)
 
         except Exception as e:
             print(e)
 
         finally:
             self.quit()
-

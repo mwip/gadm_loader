@@ -21,21 +21,23 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
-from qgis.core import QgsProject, QgsVectorLayer
-
-# Initialize Qt resources from file resources.py
-from .resources import *
-
-# Import the code for the dialog
-from .gadm_loader_dialog import GADMloaderDialog
 import os.path
 import re
 
-from .utils.parser import parse_gadm_countries, get_url
+from qgis.core import QgsProject, QgsVectorLayer
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
+
+# Import the code for the dialog
+from .gadm_loader_dialog import GADMloaderDialog
+
+# Initialize Qt resources from file resources.py
+from .resources import *
 from .utils.downloadThread import DownloadThread
+from .utils.parser import get_url, parse_gadm_countries
+
+GADM_VERSION_NO_SEP = 41
 
 
 class GADMloader:
@@ -75,14 +77,15 @@ class GADMloader:
         self.downloadthread = DownloadThread()
 
     def read_inputs(self):
-        self.format_gpkg = self.dlg.rbGeopackage.isChecked()
         self.country_name = self.dlg.cbCountry.currentText()
         self.country_code = self.country_dict[self.country_name]
         self.folder_name = self.dlg.qfFolder.filePath()
 
     def on_download_clicked(self):
         self.read_inputs()
-        self.downloadthread.set_vars(get_url(self), self.folder_name)
+        self.downloadthread.set_vars(
+            get_url(self.country_code, GADM_VERSION_NO_SEP), self.folder_name
+        )
         self.downloadthread.download_signal.connect(self.set_download_progress)
         self.downloadthread.start()
 
@@ -214,11 +217,7 @@ class GADMloader:
             if self.dlg.cbAddLayers.isChecked():
                 # set up regex to check files in self.folder_name.
                 # it could be that there are other files, e.g. LICENSE.txt or prev. downloaded files
-                regx = re.compile(
-                    "gadm36_{c}{f}".format(
-                        c=self.country_code, f=".gpkg$" if self.format_gpkg else "_[0-9]{1}.shp$"
-                    )
-                )
+                regx = re.compile(f"gadm{GADM_VERSION_NO_SEP}_{self.country_code}.gpkg")
                 # loop over all files in self.folder_name and check whether they match the settings
                 for f in os.listdir(self.folder_name):
                     if regx.match(f):
@@ -227,22 +226,17 @@ class GADMloader:
                             full_path, os.path.splitext(os.path.basename(f))[0], "ogr"
                         )
 
-                        # add layer if it is a shp
-                        if not self.format_gpkg:
-                            QgsProject.instance().addMapLayer(vlayer)
-
-                        # add all sub-layers if it is a gpkg
+                        # add all sub-layers
                         # https://stackoverflow.com/a/57404611/3250126
-                        else:
-                            sublayers = vlayer.dataProvider().subLayers()
+                        sublayers = vlayer.dataProvider().subLayers()
 
-                            for sl in sublayers:
-                                name = sl.split("!!::!!")[1]
-                                uri = "%s|layername=%s" % (
-                                    full_path,
-                                    name,
-                                )
-                                # Create layer
-                                sub_vlayer = QgsVectorLayer(uri, name, "ogr")
-                                # Add layer to map
-                                QgsProject.instance().addMapLayer(sub_vlayer)
+                        for sl in sublayers:
+                            name = sl.split("!!::!!")[1]
+                            uri = "%s|layername=%s" % (
+                                full_path,
+                                name,
+                            )
+                            # Create layer
+                            sub_vlayer = QgsVectorLayer(uri, name, "ogr")
+                            # Add layer to map
+                            QgsProject.instance().addMapLayer(sub_vlayer)

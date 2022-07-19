@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>411</width>
-    <height>201</height>
+    <height>204</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,56 +21,6 @@
    <enum>Qt::LeftToRight</enum>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="lbFormat">
-       <property name="text">
-        <string>File Format</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="rbGeopackage">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Geopackage</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">bgFormatGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="rbShapefile">
-       <property name="text">
-        <string>Shapefile</string>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">bgFormatGroup</string>
-       </attribute>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -94,8 +44,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="cbCountry">
-      </widget>
+      <widget class="QComboBox" name="cbCountry"/>
      </item>
     </layout>
    </item>
