@@ -72,10 +72,6 @@ class GADMloader:
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
 
-        self.country_dict = parse_gadm_countries()
-        self.dlg = GADMloaderDialog(self.country_dict)
-        self.downloadthread = DownloadThread()
-
     def read_inputs(self):
         self.country_name = self.dlg.cbCountry.currentText()
         self.country_code = self.country_dict[self.country_name]
@@ -202,6 +198,10 @@ class GADMloader:
 
     def run(self):
         """Run method that performs all the real work"""
+        self.country_dict = parse_gadm_countries()
+        self.dlg = GADMloaderDialog(self.country_dict)
+        self.downloadthread = DownloadThread()
+
 
         # show the dialog
         self.dlg.show()
