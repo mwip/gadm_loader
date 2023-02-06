@@ -28,7 +28,7 @@ import urllib.request
 
 
 def parse_gadm_countries():
-    url = "https://www.gadm.org/download_country.html"
+    url = "https://gadm.org/download_country.html"
     try:
         response = urllib.request.urlopen(url, timeout=30)
         content = response.read()
