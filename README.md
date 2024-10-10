@@ -18,7 +18,7 @@ file:
 
 ## Acknowledgements
 
-This plugin acquires data from http://gdam.org. Without their dedicated work, this plugin would not
+This plugin acquires data from https://gadm.org. Without their dedicated work, this plugin would not
 be possible. Please use their service humbly and only download the data you need. Also see their data policy:
 
 > The data are freely available for academic use and other non-commercial use. Redistribution, or
