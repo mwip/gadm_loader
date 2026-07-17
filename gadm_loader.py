@@ -208,7 +208,7 @@ class GADMloader:
         self.dlg.pbDownloadButton.clicked.connect(self.on_download_clicked)
 
         # Run the dialog event loop
-        result = self.dlg.exec_()
+        result = self.dlg.exec()
         # See if OK was pressed
         if result:
             self.read_inputs()
